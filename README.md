@@ -1,4 +1,4 @@
-# TremorCNN — Low-Frequency Tremor Detection with Deep Learning
+# TremorCNN - Low-Frequency Tremor Detection with Deep Learning
 
 A convolutional neural network that detects tectonic tremor in real seismic 
 waveform data fetched live from the EarthScope/IRIS archive. Built as a 
@@ -56,7 +56,7 @@ Training loss curve:
 ## Data
 
 All waveform data fetched live via ObsPy from the EarthScope/IRIS FDSN 
-web service — no local data files required.
+web service, no local data files required.
 
 - **Network:** UW (Pacific Northwest Regional Seismic Network)
 - **Stations:** GNW (Green Mountain WA), FORK (Forks WA), LEBA (Lebam WA)
@@ -96,7 +96,7 @@ Data is fetched automatically from IRIS. No downloads needed.
 ## Limitations
 
 - Single tectonic setting (Cascadia subduction zone)
-- Catalog-derived labels — quiet/tremor boundary is approximate
+- Catalog-derived labels: quiet/tremor boundary is approximate
 - 7:1 class imbalance (quiet >> tremor windows)
 - Not tested on held-out episodes or stations outside training distribution
 
