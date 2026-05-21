@@ -46,9 +46,7 @@ periods with no known ETS activity across multiple times of day and seasons.
 | Train period | Jan 2010 - Jan 2013 |
 | Test period | Jan 2013 - Oct 2013|
 
-Trained on 3,078 spectrogram windows, tested on 770 held-out windows using
-chronological split — train/test boundary at 2013-01-15. No data leakage
-between adjacent tremor windows.
+Trained on 3,078 spectrogram windows, tested on 770 held-out windows using chronological split: train/test boundary at 2013-01-15.
 
 > Note: Earlier random-split runs yielded 92.9% accuracy, inflated by data.
 > leakage between adjacent windows in the same episode. The chronological split reflects true generalization performance.
