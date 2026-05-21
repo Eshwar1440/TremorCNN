@@ -1,15 +1,12 @@
 import torch
 import torch.nn as nn
 import numpy as np
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import Dataset, DataLoader, Subset
 from model import TremorCNN
 from dataset import make_dataset
 from obspy.clients.fdsn import Client
 from obspy import UTCDateTime
 import matplotlib.pyplot as plt
-
-torch.manual_seed(42)
-np.random.seed(42)
 
 client = Client("EARTHSCOPE")
 
@@ -17,57 +14,66 @@ def fetch(net, sta, t_start, t_end):
     st = client.get_waveforms(net, sta, "--", "BHZ",
                               UTCDateTime(t_start), UTCDateTime(t_end))
     st.resample(40.0)
-    return st[0].data
+    return st[0].data, UTCDateTime(t_start)
 
 print("Fetching data...")
 
-# --- QUIET periods (far from any ETS episode) ---
-quiet_list = [
-    # Jan 2010: multiple times of day
+# --- QUIET ---
+quiet_data, quiet_times = zip(*[
     fetch("UW", "GNW", "2010-01-15T00:00:00", "2010-01-15T02:00:00"),
     fetch("UW", "GNW", "2010-01-15T06:00:00", "2010-01-15T08:00:00"),
     fetch("UW", "GNW", "2010-01-15T12:00:00", "2010-01-15T14:00:00"),
     fetch("UW", "GNW", "2010-01-15T18:00:00", "2010-01-15T20:00:00"),
-    # Mar 2012 — different season
     fetch("UW", "GNW", "2012-03-15T00:00:00", "2012-03-15T02:00:00"),
     fetch("UW", "GNW", "2012-03-15T06:00:00", "2012-03-15T08:00:00"),
     fetch("UW", "GNW", "2012-03-15T12:00:00", "2012-03-15T14:00:00"),
     fetch("UW", "GNW", "2012-03-15T18:00:00", "2012-03-15T20:00:00"),
-    # Jan 2013: two stations
     fetch("UW", "GNW",  "2013-01-15T00:00:00", "2013-01-15T02:00:00"),
     fetch("UW", "GNW",  "2013-01-15T12:00:00", "2013-01-15T14:00:00"),
     fetch("UW", "FORK", "2013-01-15T00:00:00", "2013-01-15T02:00:00"),
     fetch("UW", "FORK", "2013-01-15T12:00:00", "2013-01-15T14:00:00"),
-    # Aug 2010: pre-tremor
     fetch("UW", "GNW", "2010-08-05T23:00:00", "2010-08-06T00:00:00"),
     fetch("UW", "GNW", "2010-08-04T00:00:00", "2010-08-04T02:00:00"),
     fetch("UW", "GNW", "2010-08-04T12:00:00", "2010-08-04T14:00:00"),
-]
+])
 
-# --- TREMOR episodes ---
-tremor_list = [
-    # Aug 2010 episode: GNW, FORK, LEBA
+# --- TREMOR ---
+tremor_data, tremor_times = zip(*[
     fetch("UW", "GNW",  "2010-08-06T00:00:00", "2010-08-06T01:00:00"),
     fetch("UW", "GNW",  "2010-08-08T00:00:00", "2010-08-08T02:00:00"),
     fetch("UW", "FORK", "2010-08-06T00:00:00", "2010-08-06T01:00:00"),
     fetch("UW", "LEBA", "2010-08-06T00:00:00", "2010-08-06T01:00:00"),
-    # Sep 2011 episode: GNW, LEBA, FORK
     fetch("UW", "GNW",  "2011-09-15T00:00:00", "2011-09-15T02:00:00"),
     fetch("UW", "LEBA", "2011-09-15T00:00:00", "2011-09-15T02:00:00"),
     fetch("UW", "FORK", "2011-09-15T00:00:00", "2011-09-15T02:00:00"),
-    # Oct 2013 episode: GNW, FORK
     fetch("UW", "GNW",  "2013-10-01T00:00:00", "2013-10-01T02:00:00"),
     fetch("UW", "FORK", "2013-10-01T00:00:00", "2013-10-01T02:00:00"),
-]
+])
 
 print("Building dataset...")
-X, y = make_dataset(quiet_list, tremor_list)
-print(f"Windows: {X.shape}")
-print(f"Tremor: {y.sum()}, Quiet: {(y==0).sum()}")
+X, y, timestamps = make_dataset(
+    list(quiet_data), list(tremor_data),
+    list(quiet_times), list(tremor_times)
+)
+print(f"Windows: {X.shape}, Tremor: {y.sum()}, Quiet: {(y==0).sum()}")
+
+
+sort_idx   = np.argsort(timestamps)
+X          = X[sort_idx]
+y          = y[sort_idx]
+timestamps = timestamps[sort_idx]
+
+#80% train, 20% test
+split      = int(0.8 * len(X))
+print(f"Train up to: {UTCDateTime(timestamps[split-1])}")
+print(f"Test from:   {UTCDateTime(timestamps[split])}")
 
 # --- normalize ---
-X = 10 * np.log10(X + 1e-10)
-X = (X - X.mean()) / X.std()
+X_train = 10 * np.log10(X[:split] + 1e-10)
+X_test  = 10 * np.log10(X[split:] + 1e-10)
+mean, std = X_train.mean(), X_train.std()
+X_train = (X_train - mean) / std
+X_test  = (X_test  - mean) / std   # use train stats, not test stats
 
 # --- PyTorch Dataset ---
 class SeismicDataset(Dataset):
@@ -77,11 +83,8 @@ class SeismicDataset(Dataset):
     def __len__(self): return len(self.y)
     def __getitem__(self, i): return self.X[i], self.y[i]
 
-dataset   = SeismicDataset(X, y)
-train_size = int(0.8 * len(dataset))
-test_size  = len(dataset) - train_size
-generator  = torch.Generator().manual_seed(42)
-train_ds, test_ds = random_split(dataset, [train_size, test_size], generator=generator)
+train_ds = SeismicDataset(X_train, y[:split])
+test_ds  = SeismicDataset(X_test,  y[split:])
 
 train_loader = DataLoader(train_ds, batch_size=16, shuffle=True)
 test_loader  = DataLoader(test_ds,  batch_size=16)
@@ -123,13 +126,27 @@ with torch.no_grad():
         tn += ((pred == 0) & (yb == 0)).sum().item()
         fn += ((pred == 0) & (yb == 1)).sum().item()
 
+correct   = tp + tn
 precision = tp / (tp + fp + 1e-8)
 recall    = tp / (tp + fn + 1e-8)
 f1        = 2 * precision * recall / (precision + recall + 1e-8)
+
+print(f"\nTest accuracy: {correct}/{len(test_ds)} = {correct/len(test_ds):.1%}")
 print(f"Precision: {precision:.3f} | Recall: {recall:.3f} | F1: {f1:.3f}")
-print(f"True Positives (tremor correctly detected): {tp}")
-print(f"False Positives (quiet incorrectly flagged as tremor): {fp}")
-print(f"True Negatives (quiet correctly identified): {tn}")
-print(f"False Negatives (tremor missed): {fn}")
+print(f"True Positives  (tremor correctly detected):       {tp}")
+print(f"False Positives (quiet incorrectly flagged):       {fp}")
+print(f"True Negatives  (quiet correctly identified):      {tn}")
+print(f"False Negatives (tremor missed):                   {fn}")
 
 torch.save(model.state_dict(), 'tremor_cnn.pth')
+print("Model saved to tremor_cnn.pth")
+
+plt.figure(figsize=(8, 4))
+plt.plot(range(1, EPOCHS+1), losses, marker='o')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.title('Training Loss - TremorCNN (chronological split)')
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('loss_curve.png', dpi=150, bbox_inches='tight')
+print("Loss curve saved to loss_curve.png")

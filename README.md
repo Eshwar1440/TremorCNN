@@ -37,18 +37,21 @@ periods with no known ETS activity across multiple times of day and seasons.
 
 ## Results
 
-| Metric    | Value  |
-|-----------|--------|
-| Accuracy  | 92.9%  |
-| Precision | 0.705  |
-| Recall    | 0.720  |
-| F1        | 0.713  |
+| Metric | Value |
+|--------|-------|
+| Test Accuracy | 65.7% |
+| Precision | 0.239 |
+| Recall | 0.586 |
+| F1 | 0.340 |
+| Train period | Jan 2010 - Jan 2013 |
+| Test period | Jan 2013 - Oct 2013|
 
-Trained on 3,848 spectrogram windows from 3 ETS episodes across 3 stations 
-(UW.GNW, UW.FORK, UW.LEBA). Tested on held-out 20% split.
+Trained on 3,078 spectrogram windows, tested on 770 held-out windows using
+chronological split — train/test boundary at 2013-01-15. No data leakage
+between adjacent tremor windows.
 
-Trained on 3,848 spectrogram windows from 3 ETS episodes across 3 stations
-(UW.GNW, UW.FORK, UW.LEBA). Tested on held-out 20% split.
+> Note: Earlier random-split runs yielded 92.9% accuracy, inflated by data.
+> leakage between adjacent windows in the same episode. The chronological split reflects true generalization performance.
 
 Training loss curve:
 
