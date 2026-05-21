@@ -116,9 +116,10 @@ Data is fetched automatically from IRIS. No downloads needed.
 
 This project independently reproduces the core pipeline of:
 
-> Bodin & Frank (2021), *"Probing Slow Earthquakes With Deep Learning"*, 
-> Geophysical Research Letters. 
-> [DOI: 10.1029/2020GL088590](https://doi.org/10.1029/2020GL088590)
+> Rouet-Leduc, B., Hulbert, C., McBrearty, I. W., & Johnson, P. A. (2020).
+> *Probing Slow Earthquakes With Deep Learning.*
+> Geophysical Research Letters, 47, e2019GL085870.
+> [DOI: 10.1029/2019GL085870](https://doi.org/10.1029/2019GL085870)
 
 That paper trained a CNN on ~165,000 Cascadia tremor examples from the PNSN 
 catalog and showed the model generalizes across subduction zones and to the 
