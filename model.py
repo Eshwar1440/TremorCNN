@@ -4,25 +4,26 @@ import torch.nn as nn
 class TremorCNN(nn.Module):
     def __init__(self):
         super().__init__()
-        self.conv = nn.Sequential( 
+        self.conv = nn.Sequential(
             nn.Conv2d(1, 16, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.MaxPool2d(2), # 17 x 6
+            nn.MaxPool2d(2),
 
             nn.Conv2d(16, 32, kernel_size=3, padding=1),
             nn.ReLU(),
-            nn.MaxPool2d(2) # 8 x 3              
-            )
-        
+            nn.MaxPool2d(2),
+        )
+
         self.fc = nn.Sequential(
+            nn.Dropout(0.5),
             nn.Linear(704, 64),
             nn.ReLU(),
-            nn.Linear(64,1),
-            nn.Sigmoid()
+            nn.Dropout(0.3),
+            nn.Linear(64, 1),
         )
 
     def forward(self, x):
         x = self.conv(x)
-        x = x.view(x.size(0), - 1) # batch-size, 1-D
+        x = x.view(x.size(0), -1)
         x = self.fc(x)
         return x

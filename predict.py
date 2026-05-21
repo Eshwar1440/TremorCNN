@@ -43,7 +43,7 @@ with torch.no_grad():
         Sxx   = 10 * np.log10(Sxx + 1e-10)
         Sxx   = (Sxx - Sxx.mean()) / Sxx.std()
         x     = torch.tensor(Sxx, dtype=torch.float32).unsqueeze(0).unsqueeze(0).to(device)
-        prob  = model(x).item()
+        prob = torch.sigmoid(model(x)).item()
         times.append(start / FS / 60)
         probs.append(prob)
 
