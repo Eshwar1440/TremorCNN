@@ -1,4 +1,4 @@
-# TremorCNN — Low-Frequency Tremor Detection with Deep Learning
+# TremorCNN - Low-Frequency Tremor Detection with Deep Learning
 
 A convolutional neural network that detects tectonic tremor in real seismic 
 waveform data fetched live from the EarthScope/IRIS archive. Built as a 
@@ -56,7 +56,7 @@ Training loss curve:
 ## Data
 
 All waveform data fetched live via ObsPy from the EarthScope/IRIS FDSN 
-web service — no local data files required.
+web service, no local data files required.
 
 - **Network:** UW (Pacific Northwest Regional Seismic Network)
 - **Stations:** GNW (Green Mountain WA), FORK (Forks WA), LEBA (Lebam WA)
@@ -96,7 +96,7 @@ Data is fetched automatically from IRIS. No downloads needed.
 ## Limitations
 
 - Single tectonic setting (Cascadia subduction zone)
-- Catalog-derived labels — quiet/tremor boundary is approximate
+- Catalog-derived labels: quiet/tremor boundary is approximate
 - 7:1 class imbalance (quiet >> tremor windows)
 - Not tested on held-out episodes or stations outside training distribution
 
@@ -116,9 +116,10 @@ Data is fetched automatically from IRIS. No downloads needed.
 
 This project independently reproduces the core pipeline of:
 
-> Bodin & Frank (2021), *"Probing Slow Earthquakes With Deep Learning"*, 
-> Geophysical Research Letters. 
-> [DOI: 10.1029/2020GL088590](https://doi.org/10.1029/2020GL088590)
+> Rouet-Leduc, B., Hulbert, C., McBrearty, I. W., & Johnson, P. A. (2020).
+> *Probing Slow Earthquakes With Deep Learning.*
+> Geophysical Research Letters, 47, e2019GL085870.
+> [DOI: 10.1029/2019GL085870](https://doi.org/10.1029/2019GL085870)
 
 That paper trained a CNN on ~165,000 Cascadia tremor examples from the PNSN 
 catalog and showed the model generalizes across subduction zones and to the 
