@@ -74,6 +74,9 @@ files required are data streams directly from the archive at runtime.
 - **ETS episodes:** 2010, 2011, 2012, 2013, 2014, 2015-16, 2017, 2018
 - **Quiet periods:** Mar 2010, Apr 2011, Jun 2012, Jun 2014, Jun 2015, Jun 2016, Jun 2019
 
+- **Model weights:** [MorphKnight1440/TremorCNN](https://huggingface.co/MorphKnight1440/TremorCNN)
+- **Tremor catalog dataset:** [MorphKnight1440/CascadiaTremorCatalog](https://huggingface.co/datasets/MorphKnight1440/CascadiaTremorCatalog)
+
 ---
 
 ## Model Architecture
@@ -101,7 +104,7 @@ pip install obspy torch numpy scipy matplotlib
 # Train from scratch
 python train.py
 
-Downloads are needed to train, and updating the fetch data would be required. Look at my prior commit, if you want to train with the data that I used specifically, else obtain your data from (https://pnsn.org/tremor/map).
+Downloads are needed to train, Please look at Data section for Hugging Face Dataset I used.
 
 # Run inference on unseen data (pretrained weights included)
 python predict.py
