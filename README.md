@@ -102,7 +102,7 @@ python train.py
 # Run inference on unseen data (pretrained weights included)
 python predict.py
 
-Data is fetched automatically from IRIS/EARTHSCOPE. No downloads needed.
+Downloads are needed. Look at my prior commit, if you want to train with the data that I used specifically, else obtain your data from (https://pnsn.org/tremor/map)
 
 ---
 
