@@ -63,14 +63,16 @@ Inference on unseen station UW.MRBL (Marblemount, WA) - Sep 15 2011 ETS(Episodic
 
 ## Data
 
-All waveform data fetched live via ObsPy from the EarthScope/IRIS FDSN (Federation of Digital Seismograph Networks)
-web service, no local data files required.
+All waveform data fetched live via ObsPy from the EarthScope/IRIS FDSN
+(Federation of Digital Seismograph Networks) web service. No local waveform
+files required are data streams directly from the archive at runtime.
 
 - **Network:** UW (Pacific Northwest Regional Seismic Network)
 - **Stations:** GNW (Green Mountain WA), FORK (Forks WA), LEBA (Lebam WA)
-- **Channel:** BHZ (broadband vertical), resampled to 40 Hz
-- **Tremor episodes:** Aug 2010, Sep 2011, Oct 2013
-- **Quiet periods:** Jan 2010, Mar 2012, Jan 2013 (far from ETS activity)
+- **Channel:** BHZ/HHZ/EHZ (broadband vertical), resampled to 40 Hz
+- **Tremor labels:** PNSN catalog CSVs (tremor_events-YYYY.csv), 80,479 individual tremor event timestamps
+- **ETS episodes:** 2010, 2011, 2012, 2013, 2014, 2015-16, 2017, 2018
+- **Quiet periods:** Mar 2010, Apr 2011, Jun 2012, Jun 2014, Jun 2015, Jun 2016, Jun 2019
 
 ---
 
@@ -109,9 +111,11 @@ python predict.py
 
 ## Limitations
 
-- Single tectonic setting (Cascadia subduction zone)
-- Catalog-derived labels: quiet/tremor boundary is approximate
-- 7:1 class imbalance (quiet >> tremor windows)
+- Cascadia subduction zone only, not tested on other tectonic settings
+- 18,007 training windows vs ~95,000 in the reference paper
+- Catalog labels have ~2.5-minute resolution, some window boundaries are approximate
+- Low precision (0.134) at default 0.5 threshold, threshold tuning needed for deployment
+- 2020/2021 ETS episodes excluded due to waveform archival gaps on GNW
 
 ---
 
