@@ -99,10 +99,11 @@ pip install obspy torch numpy scipy matplotlib
 # Train from scratch
 python train.py
 
+Downloads are needed to train, and updating the fetch data would be required. Look at my prior commit, if you want to train with the data that I used specifically, else obtain your data from (https://pnsn.org/tremor/map).
+
 # Run inference on unseen data (pretrained weights included)
 python predict.py
 
-Downloads are needed. Look at my prior commit, if you want to train with the data that I used specifically, else obtain your data from (https://pnsn.org/tremor/map)
 
 ---
 
