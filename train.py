@@ -10,7 +10,7 @@ from sklearn.metrics import roc_auc_score
 import matplotlib.pyplot as plt
 import glob
 
-# --- load tremor catalog ---
+# load tremor catalog
 csv_files = glob.glob("tremor_events-*.csv")
 print(f"Loading {len(csv_files)} catalog files...")
 tremor_times = load_tremor_catalog(csv_files)
@@ -29,7 +29,8 @@ def fetch(net, sta, t_start, t_end):
             continue
     raise Exception(f"No data for {net}.{sta} {t_start}")
 
-print("Fetching waveforms...")
+
+#fetch data from csv files of that content and labelling some file times and content/episodic tremor.
 
 fetches = [
     # 2010 episode
@@ -71,12 +72,12 @@ fetches = [
     ("UW", "GNW",  "2019-06-01T00:00:00", "2019-06-01T06:00:00"),
     ("UW", "GNW",  "2019-06-01T12:00:00", "2019-06-01T18:00:00"),
     ("UW", "FORK", "2019-06-01T00:00:00", "2019-06-01T06:00:00"),
-]
+] 
 
 waveforms = []
 starts    = []
 
-for net, sta, t_start, t_end in fetches:
+for net, sta, t_start, t_end in fetches: #If you have obtained the files from my prior commit, this is just for checking if the files/data is available in device to train.
     try:
         data, t0 = fetch(net, sta, t_start, t_end)
         waveforms.append(data)
@@ -85,12 +86,12 @@ for net, sta, t_start, t_end in fetches:
     except Exception as e:
         print(f"SKIP {net}.{sta} {t_start[:10]} — {e}")
 
-print("Building dataset...")
+
 X, y, timestamps = make_dataset(waveforms, starts, tremor_times)
 print(f"Windows: {X.shape}")
 print(f"Tremor: {y.sum()}, Quiet: {(y==0).sum()}")
 
-# --- sort chronologically ---
+# Chronologically sorted, taken inspo from the paper.
 sort_idx   = np.argsort(timestamps)
 X          = X[sort_idx]
 y          = y[sort_idx]

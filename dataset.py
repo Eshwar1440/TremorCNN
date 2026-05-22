@@ -10,26 +10,19 @@ FS           = 40.0
 NPERSEG      = 256
 
 def load_tremor_catalog(csv_paths):
-    """
-    Load and merge multiple PNSN tremor CSV files.
-    Returns sorted array of tremor event times as UTCDateTime objects.
-    """
     dfs = []
-    for path in csv_paths:
+    for path in csv_paths: #Dont worry, the files I used are in one of my prior commits.
         df = pd.read_csv(path, skipinitialspace=True)
         dfs.append(df)
     catalog = pd.concat(dfs, ignore_index=True)
     catalog['starttime'] = pd.to_datetime(catalog['starttime'])
     catalog = catalog.sort_values('starttime').reset_index(drop=True)
-    # convert to unix timestamps for fast comparison
+    
     times = np.array([t.timestamp() for t in catalog['starttime']])
     return times
 
 def is_tremor_window(window_start_unix, window_end_unix, tremor_times, tolerance=300):
-    """
-    A window is labeled tremor if any catalog event falls within it
-    (plus a tolerance buffer in seconds).
-    """
+   
     mask = (tremor_times >= window_start_unix - tolerance) & \
            (tremor_times <= window_end_unix + tolerance)
     return mask.any()
