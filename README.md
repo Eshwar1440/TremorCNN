@@ -48,9 +48,6 @@ periods with no known ETS activity across multiple times of day and seasons.
 
 Trained on 3,078 spectrogram windows, tested on 770 held-out windows using chronological split: train/test boundary at 2013-01-15.
 
-> Note: Earlier random-split runs yielded 92.9% accuracy, inflated by data.
-> leakage between adjacent windows in the same episode. The chronological split reflects true generalization performance.
-
 Training loss curve:
 
 ![Loss Curve](loss_curve.png)
