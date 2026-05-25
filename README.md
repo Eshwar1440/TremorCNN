@@ -1,4 +1,37 @@
-# TremorCNN - Low-Frequency Tremor Detection with Deep Learning
+<div align="center">
+  <h1 align="center">TremorCNN</h1>
+  
+  <p align="center">
+    <a href="https://github.com/Eshwar1440/TremorCNN/blob/main/LICENSE">
+      <img alt="License" src="https://img.shields.io/github/license/Eshwar1440/TremorCNN">
+    </a>
+    <a href="https://github.com/Eshwar1440/TremorCNN/issues">
+      <img alt="Issues" src="https://img.shields.io/github/issues/Eshwar1440/TremorCNN">
+    </a>
+    <a href="https://github.com/Eshwar1440/TremorCNN/network/members">
+      <img alt="Forks" src="https://img.shields.io/github/forks/Eshwar1440/TremorCNN">
+    </a>
+    <a href="https://github.com/Eshwar1440/TremorCNN/stargazers">
+      <img alt="Stars" src="https://img.shields.io/github/stars/Eshwar1440/TremorCNN">
+    </a>
+    <a href="https://github.com/Eshwar1440/TremorCNN/commits/main">
+      <img alt="Last Commit" src="https://img.shields.io/github/last-commit/Eshwar1440/TremorCNN">
+    </a>
+  </p>
+  <p align="center">
+    <a href="https://huggingface.co/MorphKnight1440/TremorCNN">
+      <img alt="Model on HuggingFace" src="https://img.shields.io/badge/Model-TremorCNN-FFD21E?style=for-the-badge&logo=huggingface&logoColor=000">
+    </a>
+    <a href="https://huggingface.co/datasets/MorphKnight1440/CascadiaTremorCatalog">
+      <img alt="Dataset on HuggingFace" src="https://img.shields.io/badge/Dataset-CascadiaTremorCatalog-FFD21E?style=for-the-badge&logo=huggingface&logoColor=000">
+    </a>
+    <a href="https://pytorch.org/">
+      <img alt="Built with PyTorch" src="https://img.shields.io/badge/Built%20with-PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white">
+    </a>
+  </p>
+</div>
+
+# Low-Frequency Tremor Detection with Deep Learning
 
 A convolutional neural network that detects tectonic tremor in real seismic 
 waveform data fetched live from the EarthScope/IRIS archive. Built as a 
