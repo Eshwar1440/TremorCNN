@@ -88,7 +88,7 @@ Training loss curve:
 
 ![Loss Curve](loss_curve.png)
 
-Inference on unseen station UW.MRBL (Marblemount, WA) - Sep 15 2011 ETS(Episodic Tremor and Slip):
+Inference on unseen station UW.MRBL (Marblemount, WA) - Sep 1 2011, 00:00-01:00 UTC (2011 ETS episode):
 
 ![Prediction Timeline](prediction_timeline.png)
 
@@ -148,9 +148,9 @@ python predict.py
 ## Limitations
 
 - Cascadia subduction zone only, not tested on other tectonic settings
-- 18,007 training windows vs ~95,000 in the reference paper
+- 19,746 total windows vs ~165,000 in the reference paper
 - Catalog labels have ~2.5-minute resolution, some window boundaries are approximate
-- Low precision (0.134) at default 0.7 threshold, threshold tuning needed for deployment
+- Low precision (0.186) at 0.80 threshold; higher threshold reduces false positives but sacrifices recall
 - 2020/2021 ETS episodes excluded due to waveform archival gaps on GNW
 
 ---
