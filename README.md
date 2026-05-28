@@ -72,16 +72,17 @@ periods with no known ETS activity across multiple times of day and seasons.
 
 | Metric | Value |
 |--------|-------|
-| Test Accuracy | 82.7% |
-| Precision | 0.156 |
-| Recall | 0.830 |
-| F1 | 0.263 |
-| True Positives (tremor correctly detected) | 122 |
-| False Positives (quiet incorrectly flagged)| 658 |
-| True Negatives (quiet correctly identified)| 2962 |
-| False Negatives (tremors missed)| 25 |
+| Test Accuracy | 87.0% |
+| Precision | 0.186 |
+| Recall | 0.741 |
+| F1 | 0.297 |
+| ROC-AUC | 0.869 |
+| True Positives (tremor correctly detected) | 109 |
+| False Positives (quiet incorrectly flagged)| 477 |
+| True Negatives (quiet correctly identified)| 3326 |
+| False Negatives (tremors missed)| 38 |
 
-Trained on 3,078 spectrogram windows, tested on 770 held-out windows using chronological split: train/test boundary at 2013-01-15.
+Trained on 15,796 spectrogram windows, tested on 3,950 held-out windows using chronological split: train/test boundary at 2016-01-05. Decision threshold: 0.80.
 
 Training loss curve:
 
@@ -157,9 +158,11 @@ python predict.py
 ## Future Work
 
 - Multi-station generalization (test on UW.LRIV, CN network stations)
+- Multi-station voting (classify it as tremor if more than 2 stations agree.)
 - Replace CNN with transformer architecture for long-range temporal patterns
+- Retrain on noise windows the model mistakes for tremor to cut false alarms
 - ROC curve analysis and threshold tuning for operational deployment
-- Integration with live IRIS stream for real-time detection
+- Integration with live EARTHSCOPE stream for real-time detection
 
 ---
 

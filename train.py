@@ -6,9 +6,12 @@ from model import TremorCNN
 from dataset import make_dataset, load_tremor_catalog
 from obspy.clients.fdsn import Client
 from obspy import UTCDateTime
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, precision_recall_curve
 import matplotlib.pyplot as plt
 import glob
+
+torch.manual_seed(42)
+np.random.seed(42)
 
 # load tremor catalog
 csv_files = glob.glob("tremor_events-*.csv")
@@ -161,7 +164,7 @@ with torch.no_grad():
     for xb, yb in test_loader:
         xb, yb = xb.to(device), yb.to(device)
         prob = torch.sigmoid(model(xb).squeeze())
-        pred = (prob > 0.7).float()
+        pred = (prob > 0.80).float()
         tp += ((pred == 1) & (yb == 1)).sum().item()
         fp += ((pred == 1) & (yb == 0)).sum().item()
         tn += ((pred == 0) & (yb == 0)).sum().item()
@@ -177,11 +180,16 @@ auc       = roc_auc_score(all_labels, all_probs)
 
 print(f"\nTest accuracy: {correct}/{len(test_ds)} = {correct/len(test_ds):.1%}")
 print(f"Precision: {precision:.3f} | Recall: {recall:.3f} | F1: {f1:.3f}")
-print(f"ROC-AUC:   {auc:.3f}  (paper reported 0.945)")
+print(f"ROC-AUC:   {auc:.3f}")
 print(f"True Positives  (tremor correctly detected):  {tp}")
 print(f"False Positives (quiet incorrectly flagged):  {fp}")
 print(f"True Negatives  (quiet correctly identified): {tn}")
 print(f"False Negatives (tremor missed):              {fn}")
+
+prec_curve, rec_curve, thresholds = precision_recall_curve(all_labels, all_probs)
+f_beta = (1 + 0.5**2) * (prec_curve * rec_curve) / (0.5**2 * prec_curve + rec_curve + 1e-8)
+best_thresh = thresholds[np.argmax(f_beta[:-1])]
+print(f"Optimal threshold (F0.5): {best_thresh:.3f}")
 
 torch.save(model.state_dict(), "tremor_cnn.pth")
 print("Model saved to tremor_cnn.pth")
