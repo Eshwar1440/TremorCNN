@@ -39,17 +39,16 @@ periods with no known ETS activity across multiple times of day and seasons.
 
 | Metric | Value |
 |--------|-------|
-| Test Accuracy | 65.7% |
-| Precision | 0.239 |
-| Recall | 0.586 |
-| F1 | 0.340 |
-| Train period | Jan 2010 - Jan 2013 |
-| Test period | Jan 2013 - Oct 2013|
+| Test Accuracy | 82.7% |
+| Precision | 0.156 |
+| Recall | 0.830 |
+| F1 | 0.263 |
+| True Positives (tremor correctly detected) | 122 |
+| False Positives (quiet incorrectly flagged)| 658 |
+| True Negatives (quiet correctly identified)| 2962 |
+| False Negatives (tremors missed)| 25 |
 
 Trained on 3,078 spectrogram windows, tested on 770 held-out windows using chronological split: train/test boundary at 2013-01-15.
-
-> Note: Earlier random-split runs yielded 92.9% accuracy, inflated by data.
-> leakage between adjacent windows in the same episode. The chronological split reflects true generalization performance.
 
 Training loss curve:
 
@@ -86,7 +85,7 @@ Input: (1, 45, 10) spectrogram patch
 → Conv2d(1→16, 3x3) + ReLU + MaxPool2d(2)   # → (16, 22, 5)
 → Conv2d(16→32, 3x3) + ReLU + MaxPool2d(2)  # → (32, 11, 2)
 → Flatten → Linear(704→64) + ReLU
-→ Linear(64→1) + Sigmoid
+→ Linear(64→1)
 ```
 
 Binary Cross-Entropy loss, Adam optimizer (lr=1e-3), 20 epochs.
@@ -117,7 +116,7 @@ python predict.py
 - Cascadia subduction zone only, not tested on other tectonic settings
 - 18,007 training windows vs ~95,000 in the reference paper
 - Catalog labels have ~2.5-minute resolution, some window boundaries are approximate
-- Low precision (0.134) at default 0.5 threshold, threshold tuning needed for deployment
+- Low precision (0.134) at default 0.7 threshold, threshold tuning needed for deployment
 - 2020/2021 ETS episodes excluded due to waveform archival gaps on GNW
 
 ---
